@@ -96,9 +96,11 @@ private:
         return -1;
     }
 
-    void sumOfAllNodes(Node* root, int &sum){
-        if(!root) return;
-        sum+=root->val;
+    void sumOfAllNodes(Node *root, int &sum)
+    {
+        if (!root)
+            return;
+        sum += root->val;
         sumOfAllNodes(root->left, sum);
         sumOfAllNodes(root->right, sum);
     }
@@ -120,28 +122,48 @@ private:
         }
     }
 
-    void maxValue(Node* root, int &max){
-        if(!root) return;
-        if(root->val>max) max= root->val;
+    void maxValue(Node *root, int &max)
+    {
+        if (!root)
+            return;
+        if (root->val > max)
+            max = root->val;
         maxValue(root->left, max);
         maxValue(root->right, max);
     }
 
-    void minValue(Node* root, int &min){
-        if(!root) return;
-        if(root->val<min) min=root->val;
+    void minValue(Node *root, int &min)
+    {
+        if (!root)
+            return;
+        if (root->val < min)
+            min = root->val;
         minValue(root->left, min);
         minValue(root->right, min);
     }
 
-    void countNodesAtLevelK(Node* root, int k, int &count){
-        if(!root) return;
-        if(k==0){
+    void countNodesAtLevelK(Node *root, int k, int &count)
+    {
+        if (!root)
+            return;
+        if (k == 0)
+        {
             count++;
             return;
         }
         countNodesAtLevelK(root->left, k - 1, count);
         countNodesAtLevelK(root->right, k - 1, count);
+    }
+
+    bool checkIfIdentical(Node *root1, Node *root2)
+    {
+        if (!root1 && !root2)
+            return true;
+        if ((!root1 && root2) || (root1 && !root2))
+            return false;
+        if (root1->val != root2->val)
+            return false;
+        return checkIfIdentical(root1->left, root2->left) && checkIfIdentical(root1->right, root2->right);
     }
 
     Node *createBinaryTree()
@@ -199,6 +221,11 @@ public:
         int countAtLevelK = 0;
         countNodesAtLevelK(root, k, countAtLevelK);
         cout << "The number of nodes at level " << k << " is: " << countAtLevelK << endl;
+        Node *root1 = createBinaryTree();
+        Node *root2 = createBinaryTree();
+        root2->right->right->left = new Node(10); // Modify one node to make the trees different
+        bool identical = checkIfIdentical(root, root2);
+        cout << "The two trees are identical: " << (identical ? "true" : "false") << endl;
     }
     ~binary_tree();
 };
