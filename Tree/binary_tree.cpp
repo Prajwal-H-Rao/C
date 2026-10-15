@@ -96,6 +96,13 @@ private:
         return -1;
     }
 
+    void sumOfAllNodes(Node* root, int &sum){
+        if(!root) return;
+        sum+=root->val;
+        sumOfAllNodes(root->left, sum);
+        sumOfAllNodes(root->right, sum);
+    }
+
     void levelorder(Node *root)
     {
         if (!root)
@@ -125,6 +132,16 @@ private:
         if(root->val<min) min=root->val;
         minValue(root->left, min);
         minValue(root->right, min);
+    }
+
+    void countNodesAtLevelK(Node* root, int k, int &count){
+        if(!root) return;
+        if(k==0){
+            count++;
+            return;
+        }
+        countNodesAtLevelK(root->left, k - 1, count);
+        countNodesAtLevelK(root->right, k - 1, count);
     }
 
     Node *createBinaryTree()
@@ -175,6 +192,13 @@ public:
         int min = INT_MAX;
         minValue(root, min);
         cout << "The minimum value in the tree is: " << min << endl;
+        int sum = 0;
+        sumOfAllNodes(root, sum);
+        cout << "The sum of all nodes in the tree is: " << sum << endl;
+        int k = 3;
+        int countAtLevelK = 0;
+        countNodesAtLevelK(root, k, countAtLevelK);
+        cout << "The number of nodes at level " << k << " is: " << countAtLevelK << endl;
     }
     ~binary_tree();
 };
