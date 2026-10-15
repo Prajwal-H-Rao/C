@@ -1,5 +1,6 @@
 #include <iostream>
-#include<queue>
+#include <queue>
+#include <limits.h>
 using namespace std;
 
 class Node
@@ -47,40 +48,83 @@ private:
         cout << root->val;
     }
 
-    void countNodes(Node* root, int &count){
-        if(!root) return;
+    void countNodes(Node *root, int &count)
+    {
+        if (!root)
+            return;
         count++;
         countNodes(root->left, count);
         countNodes(root->right, count);
     }
 
-    void countLeafNodes(Node* root, int &count){
-        if(!root) return;
-        if(root->left==NULL && root->right==NULL) count++;
-        countLeafNodes(root->left,count);
-        countLeafNodes(root->right,count);
+    void countLeafNodes(Node *root, int &count)
+    {
+        if (!root)
+            return;
+        if (root->left == NULL && root->right == NULL)
+            count++;
+        countLeafNodes(root->left, count);
+        countLeafNodes(root->right, count);
     }
 
-    void countHeight(Node* root, int &curHeight ,int &maxHeight){
-        if(!root->left && !root->right){
-            maxHeight=curHeight>maxHeight?curHeight:maxHeight;
+    void countHeight(Node *root, int &curHeight, int &maxHeight)
+    {
+        if (!root->left && !root->right)
+        {
+            maxHeight = curHeight > maxHeight ? curHeight : maxHeight;
             --curHeight;
             return;
         }
-        countHeight(root->left,++curHeight,maxHeight);
-        countHeight(root->right,++curHeight,maxHeight);
+        if (root->left)
+            countHeight(root->left, ++curHeight, maxHeight);
+        if (root->right)
+            countHeight(root->right, ++curHeight, maxHeight);
     }
 
-    void levelorder(Node* root){
-        if(!root) return;
-        queue<Node*> q;
+    int countDepth(Node *root, int target)
+    {
+        if (!root)
+            return -1;
+        else if (root->val == target)
+            return 1;
+        int left = countDepth(root->left, target);
+        if (left != -1)
+            return left + 1;
+        int right = countDepth(root->right, target);
+        if (right != -1)
+            return right + 1;
+        return -1;
+    }
+
+    void levelorder(Node *root)
+    {
+        if (!root)
+            return;
+        queue<Node *> q;
         q.push(root);
-        while(!q.empty()){
+        while (!q.empty())
+        {
             cout << q.front()->val;
-            if(q.front()->left) q.push(q.front()->left);
-            if(q.front()->right) q.push(q.front()->right);
+            if (q.front()->left)
+                q.push(q.front()->left);
+            if (q.front()->right)
+                q.push(q.front()->right);
             q.pop();
         }
+    }
+
+    void maxValue(Node* root, int &max){
+        if(!root) return;
+        if(root->val>max) max= root->val;
+        maxValue(root->left, max);
+        maxValue(root->right, max);
+    }
+
+    void minValue(Node* root, int &min){
+        if(!root) return;
+        if(root->val<min) min=root->val;
+        minValue(root->left, min);
+        minValue(root->right, min);
     }
 
     Node *createBinaryTree()
@@ -88,10 +132,11 @@ private:
         Node *root = new Node(1);
         root->left = new Node(2);
         root->right = new Node(3);
-        root->left->left = new Node(4);
+        root->left->left = new Node(0);
         root->left->right = new Node(5);
-        root->right->left = new Node(6);
+        root->right->left = new Node(9);
         root->right->right = new Node(7);
+        root->right->right->left = new Node(8);
         return root;
     }
     /* data */
@@ -116,12 +161,20 @@ public:
         countNodes(root, count);
         cout << "Total Nodes: " << count << endl;
         int leafCount = 0;
-        countLeafNodes(root,leafCount);
-        cout<< "The total number of leaf nodes: "<< leafCount<<endl;
+        countLeafNodes(root, leafCount);
+        cout << "The total number of leaf nodes: " << leafCount << endl;
         int height = 0;
         int curHeight = 0;
-        countHeight(root,curHeight,height);
-        cout<<"The height of the tree is: "<< height <<endl;
+        countHeight(root, curHeight, height);
+        cout << "The height of the tree is: " << height << endl;
+        int depth = countDepth(root, 5);
+        cout << "The depth of the node with value 5 is: " << depth << endl;
+        int max = INT_MIN;
+        maxValue(root, max);
+        cout << "The maximum value in the tree is: " << max << endl;
+        int min = INT_MAX;
+        minValue(root, min);
+        cout << "The minimum value in the tree is: " << min << endl;
     }
     ~binary_tree();
 };
@@ -134,8 +187,9 @@ binary_tree::~binary_tree()
 {
 }
 
-int main(){
-    binary_tree* b = new binary_tree();
+int main()
+{
+    binary_tree *b = new binary_tree();
     b->traverse();
     return 0;
 }
