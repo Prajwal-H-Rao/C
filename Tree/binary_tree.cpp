@@ -47,6 +47,30 @@ private:
         cout << root->val;
     }
 
+    void countNodes(Node* root, int &count){
+        if(!root) return;
+        count++;
+        countNodes(root->left, count);
+        countNodes(root->right, count);
+    }
+
+    void countLeafNodes(Node* root, int &count){
+        if(!root) return;
+        if(root->left==NULL && root->right==NULL) count++;
+        countLeafNodes(root->left,count);
+        countLeafNodes(root->right,count);
+    }
+
+    void countHeight(Node* root, int &curHeight ,int &maxHeight){
+        if(!root->left && !root->right){
+            maxHeight=curHeight>maxHeight?curHeight:maxHeight;
+            --curHeight;
+            return;
+        }
+        countHeight(root->left,++curHeight,maxHeight);
+        countHeight(root->right,++curHeight,maxHeight);
+    }
+
     void levelorder(Node* root){
         if(!root) return;
         queue<Node*> q;
@@ -88,6 +112,16 @@ public:
         cout << "Levelorder" << endl;
         levelorder(root);
         cout << endl;
+        int count = 0;
+        countNodes(root, count);
+        cout << "Total Nodes: " << count << endl;
+        int leafCount = 0;
+        countLeafNodes(root,leafCount);
+        cout<< "The total number of leaf nodes: "<< leafCount<<endl;
+        int height = 0;
+        int curHeight = 0;
+        countHeight(root,curHeight,height);
+        cout<<"The height of the tree is: "<< height <<endl;
     }
     ~binary_tree();
 };
