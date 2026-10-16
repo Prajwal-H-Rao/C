@@ -78,6 +78,32 @@ public:
         preorder(root->left);
         preorder(root->right);
     }
+    void inorderPredecessor(Node *root, Node *&predecessor, int key)
+    {
+        if (!root)
+            return;
+        if (root->val == key)
+        {
+            if (root->left)
+            {
+                Node *cur = root->left;
+                while (cur->right)
+                {
+                    cur = cur->right;
+                }
+                predecessor = cur;
+            }
+        }
+        else if (root->val > key)
+        {
+            inorderPredecessor(root->left, predecessor, key);
+        }
+        else
+        {
+            predecessor = root;
+            inorderPredecessor(root->right, predecessor, key);
+        }
+    }
     void inorderSuccessor(Node *root, Node *&successor, int key)
     {
         if (!root)
@@ -152,6 +178,10 @@ int main()
     Node *successor = nullptr;
     bst.inorderSuccessor(root, successor, key);
     cout << " The inorder successor is " << (successor ? successor->val : -1) << endl;
+
+    Node *predecessor = nullptr;
+    bst.inorderPredecessor(root, predecessor, key);
+    cout << " The inorder predecessor is " << (predecessor ? predecessor->val : -1) << endl;
 
     return 0;
 }
