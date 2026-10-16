@@ -67,7 +67,7 @@ public:
         if (!root)
             return;
         inorder(root->left);
-        cout << root->val << endl;
+        cout << root->val << " ";
         inorder(root->right);
     }
     void preorder(Node *root)
@@ -131,6 +131,19 @@ public:
         }
         return;
     }
+    Node *deleteLeafNode(Node *root)
+    {
+        if (!root)
+            return root;
+        if (!root->left && !root->right)
+        {
+            delete root;
+            return NULL;
+        }
+        root->left = deleteLeafNode(root->left);
+        root->right = deleteLeafNode(root->right);
+        return root;
+    }
     void postorder(Node *root)
     {
         if (!root)
@@ -182,6 +195,10 @@ int main()
     Node *predecessor = nullptr;
     bst.inorderPredecessor(root, predecessor, key);
     cout << " The inorder predecessor is " << (predecessor ? predecessor->val : -1) << endl;
-
+    bst.inorder(root);
+    cout << endl;
+    bst.deleteLeafNode(root);
+    bst.inorder(root);
+    cout << endl;
     return 0;
 }
