@@ -19,6 +19,20 @@ class BinarySearchTree
 {
 private:
 public:
+    Node *search(Node *root, int key)
+    {
+        if (!root || root->val == key)
+            return root;
+        if (root->val > key)
+        {
+            return search(root->left, key);
+        }
+        if (root->val < key)
+        {
+            return search(root->right, key);
+        }
+        return NULL;
+    }
     Node *insert(Node *root, int val)
     {
         if (!root)
@@ -88,5 +102,9 @@ int main()
     for (int value : values)
         root = bst.insert(root, value);
     bst.levelorder(root);
+    int key;
+    cout << "Enter the key you want to search for:" << endl;
+    cin >> key;
+    cout << "Searching tree for " << key << " " << (bst.search(root, key) ? bst.search(root, key)->val : -1) << endl;
     return 0;
 }
