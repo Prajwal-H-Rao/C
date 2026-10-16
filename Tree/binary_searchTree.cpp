@@ -78,6 +78,33 @@ public:
         preorder(root->left);
         preorder(root->right);
     }
+    void inorderSuccessor(Node *root, Node *&successor, int key)
+    {
+        if (!root)
+            return;
+        if (root->val == key)
+        {
+            if (root->right)
+            {
+                Node *cur = root->right;
+                while (cur->left)
+                {
+                    cur = cur->left;
+                }
+                successor = cur;
+            }
+        }
+        if (root->val > key)
+        {
+            successor = root;
+            inorderSuccessor(root->left, successor, key);
+        }
+        else
+        {
+            inorderSuccessor(root->right, successor, key);
+        }
+        return;
+    }
     void postorder(Node *root)
     {
         if (!root)
@@ -121,5 +148,10 @@ int main()
 
     cout << " The smallest element is " << bst.findMin(root)->val << endl;
     cout << " The largest element is " << bst.findMax(root)->val << endl;
+
+    Node *successor = nullptr;
+    bst.inorderSuccessor(root, successor, key);
+    cout << " The inorder successor is " << (successor ? successor->val : -1) << endl;
+
     return 0;
 }
