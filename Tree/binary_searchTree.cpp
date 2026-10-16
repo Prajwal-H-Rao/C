@@ -19,6 +19,48 @@ class BinarySearchTree
 {
 private:
 public:
+    Node *deleteNodeWithChild(Node *root, int key)
+    {
+        if (!root)
+            return root;
+        if (root->val > key)
+        {
+            root->left = deleteNodeWithChild(root->left, key);
+        }
+        else if (root->val < key)
+        {
+            root->right = deleteNodeWithChild(root->right, key);
+        }
+        else
+        {
+            if (!root->left && !root->right)
+            {
+                delete root;
+                return NULL;
+            }
+            else if (!root->left && root->right)
+            {
+                Node *temp = root->right;
+                delete root;
+                return temp;
+            }
+            else if (root->left && !root->right)
+            {
+                Node *temp = root->left;
+                delete root;
+                return temp;
+            }
+            else
+            {
+                Node *successor = NULL;
+                inorderSuccessor(root, successor, root->val);
+                successor->left = root->left;
+                delete root;
+                return successor;
+            }
+        }
+        return root;
+    }
     Node *search(Node *root, int key)
     {
         if (!root || root->val == key)
@@ -176,17 +218,23 @@ int main()
 {
     BinarySearchTree bst = BinarySearchTree();
     Node *root = nullptr;
-    vector<int> values = {8, 7, 6, 5, 4, 3, 2, 1, 9};
-    for (int value : values)
-        root = bst.insert(root, value);
+    vector<int> values1 = {8, 1, 2, 3};
+    vector<int> values2 = {8, 2, 1, 0};
+    vector<int> values3 = {8, 2, 9, 1, 3, -1, 10, -1, -1, -1, 7, -1, -1, 6, 11};
+
+    for (int value : values3)
+        if (value != -1)
+        {
+            root = bst.insert(root, value);
+        }
     bst.levelorder(root);
     int key;
     cout << "Enter the key you want to search for:" << endl;
     cin >> key;
     cout << "Searching tree for " << key << " " << (bst.search(root, key) ? bst.search(root, key)->val : -1) << endl;
 
-    cout << " The smallest element is " << bst.findMin(root)->val << endl;
-    cout << " The largest element is " << bst.findMax(root)->val << endl;
+    // cout << " The smallest element is " << bst.findMin(root)->val << endl;
+    // cout << " The largest element is " << bst.findMax(root)->val << endl;
 
     Node *successor = nullptr;
     bst.inorderSuccessor(root, successor, key);
@@ -197,7 +245,11 @@ int main()
     cout << " The inorder predecessor is " << (predecessor ? predecessor->val : -1) << endl;
     bst.inorder(root);
     cout << endl;
-    bst.deleteLeafNode(root);
+    // bst.deleteLeafNode(root);
+    // bst.inorder(root);
+    // cout << endl;
+    cout << "Deleting a node" << endl;
+    bst.deleteNodeWithChild(root, key);
     bst.inorder(root);
     cout << endl;
     return 0;
