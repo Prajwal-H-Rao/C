@@ -50,6 +50,18 @@ public:
         return root;
     }
 
+    Node *findMin(Node *root)
+    {
+        if (root && !root->left && !root->right)
+            return root;
+        return findMin(root->left);
+    }
+    Node *findMax(Node *root)
+    {
+        if (root && !root->left && !root->right)
+            return root;
+        return findMin(root->right);
+    }
     void inorder(Node *root)
     {
         if (!root)
@@ -106,5 +118,8 @@ int main()
     cout << "Enter the key you want to search for:" << endl;
     cin >> key;
     cout << "Searching tree for " << key << " " << (bst.search(root, key) ? bst.search(root, key)->val : -1) << endl;
+
+    cout << " The smallest element is " << bst.findMin(root)->val << endl;
+    cout << " The largest element is " << bst.findMax(root)->val << endl;
     return 0;
 }
