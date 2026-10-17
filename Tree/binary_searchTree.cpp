@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <limits.h>
 using namespace std;
 
 typedef struct Node
@@ -19,6 +20,15 @@ class BinarySearchTree
 {
 private:
 public:
+    int min = INT_MIN, max = INT_MAX;
+    bool verifyBST(Node *root, int min, int max)
+    {
+        if (!root)
+            return true;
+        if (root->val <= min || root->val >= max)
+            return false;
+        return verifyBST(root->left, min, root->val) && verifyBST(root->right, root->val, max);
+    }
     Node *deleteNodeWithChild(Node *root, int key)
     {
         if (!root)
@@ -252,5 +262,7 @@ int main()
     bst.deleteNodeWithChild(root, key);
     bst.inorder(root);
     cout << endl;
+    root->left->val = 21;
+    cout << " The tree is BST: " << (bst.verifyBST(root, bst.min, bst.max) ? "yes" : "no") << endl;
     return 0;
 }
