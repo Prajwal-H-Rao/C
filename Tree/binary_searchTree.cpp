@@ -21,6 +21,33 @@ class BinarySearchTree
 private:
 public:
     int min = INT_MIN, max = INT_MAX;
+    int kthLargest(Node *root, int &count, int k)
+    {
+        if (!root)
+            return -1;
+        int right = kthLargest(root->right, count, k);
+        if (right != -1)
+            return right;
+        count++;
+        if (count == k)
+            return root->val;
+        int left = kthLargest(root->left, count, k);
+        return left;
+    }
+    int ktheSmallest(Node *root, int &count, int k)
+    {
+        if (!root)
+            return -1;
+        int left = ktheSmallest(root->left, count, k);
+        if (left != -1)
+            return left;
+
+        count++;
+        if (count == k)
+            return root->val;
+        int right = ktheSmallest(root->right, count, k);
+        return right;
+    }
     bool verifyBST(Node *root, int min, int max)
     {
         if (!root)
@@ -238,6 +265,10 @@ int main()
             root = bst.insert(root, value);
         }
     bst.levelorder(root);
+    int count = 0;
+    cout << "3rd smallest element is " << bst.ktheSmallest(root, count, 3) << endl;
+    count = 0;
+    cout << "3rd largest element is " << bst.kthLargest(root, count, 3) << endl;
     int key;
     cout << "Enter the key you want to search for:" << endl;
     cin >> key;
@@ -262,7 +293,7 @@ int main()
     bst.deleteNodeWithChild(root, key);
     bst.inorder(root);
     cout << endl;
-    root->left->val = 21;
     cout << " The tree is BST: " << (bst.verifyBST(root, bst.min, bst.max) ? "yes" : "no") << endl;
+
     return 0;
 }
