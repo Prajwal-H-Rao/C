@@ -20,6 +20,46 @@ class BinarySearchTree
 {
 private:
 public:
+    void floorCeil(Node *root, int target, int &floor, int &ceil)
+    {
+
+        Node *cur = root;
+        while (cur)
+        {
+            if (cur->val == target)
+            {
+                floor = cur->val;
+                break;
+            }
+            else if (target < cur->val)
+            {
+                cur = cur->left;
+            }
+            else
+            {
+                floor = cur->val;
+                cur = cur->right;
+            }
+        }
+        cur = root;
+        while (cur)
+        {
+            if (target == cur->val)
+            {
+                ceil = cur->val;
+                break;
+            }
+            else if (target < cur->val)
+            {
+                ceil = cur->val;
+                cur = cur->left;
+            }
+            else
+            {
+                cur = cur->right;
+            }
+        }
+    }
     int min = INT_MIN, max = INT_MAX;
     int kthLargest(Node *root, int &count, int k)
     {
@@ -294,6 +334,9 @@ int main()
     bst.inorder(root);
     cout << endl;
     cout << " The tree is BST: " << (bst.verifyBST(root, bst.min, bst.max) ? "yes" : "no") << endl;
+    int floor = -1, ceil = -1;
+    bst.floorCeil(root, key, floor, ceil);
+    cout << "Floor: " << floor << ", Ceil: " << ceil << endl;
 
     return 0;
 }
