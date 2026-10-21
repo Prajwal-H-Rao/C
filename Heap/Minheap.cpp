@@ -1,4 +1,6 @@
 #include <iostream>
+#include <stdexcept>
+#include <vector>
 using namespace std;
 
 class MinHeap
@@ -11,10 +13,21 @@ private:
 public:
     MinHeap(int capacity)
     {
+        if (capacity < 0)
+        {
+            throw invalid_argument("Heap capacity cannot be negative");
+        }
         this->capacity = capacity;
         this->top = -1;
-        heap = new int(capacity);
+        heap = new int[capacity];
     } // The constructor to initialize the data with repsect to the heap
+    ~MinHeap()
+    {
+        delete[] heap;
+    }
+
+    MinHeap(const MinHeap &) = delete;
+    MinHeap &operator=(const MinHeap &) = delete;
 
     int left(int index)
     {
@@ -28,7 +41,7 @@ public:
 
     int parent(int index)
     {
-        return index / 2;
+        return (index - 1) / 2;
     }
 
     void swap(int &index1, int &index2)
@@ -40,9 +53,10 @@ public:
 
     void insert(int value)
     {
-        if (top == capacity)
+        if (top + 1 >= capacity)
         {
             cout << "The heap is already full" << endl;
+            return;
         }
         top++;
         heap[top] = value;
@@ -59,15 +73,15 @@ public:
         int l = left(index);
         int r = right(index);
         int min = index;
-        if (index > top)
+        if (index < 0 || index > top)
             return;
-        if (heap[l] < heap[min])
+        if (l <= top && heap[l] < heap[min])
         {
             min = l;
         }
-        if (heap[r] < heap[min])
+        if (r <= top && heap[r] < heap[min])
         {
-            min = l;
+            min = r;
         }
         if (min != index)
         {
@@ -84,9 +98,9 @@ public:
             return;
         }
         heap[0] = heap[top--];
-        printHeap();
+        // printHeap();
         heapify(0);
-        printHeap();
+        // printHeap();
     }
 
     void printHeap()
@@ -105,15 +119,43 @@ public:
         }
         cout << endl;
     }
+
+    int minElement()
+    {
+        return heap[0];
+    }
+
+    void heapSort()
+    {
+        int size = top + 1;
+        while (top > 0)
+        {
+            int min = minElement();
+            deleteMin();
+            heap[top + 1] = min;
+        }
+        for (int i = 0; i < size; i++)
+        {
+            cout << heap[i] << " ";
+        }
+        cout << endl;
+    }
 };
 int main()
 {
     MinHeap heap(10);
-    heap.insert(40);
-    heap.insert(20);
-    heap.insert(30);
-    heap.insert(10);
+    vector<int> input = {1, 3, 21, 4, 6, 5};
+    for (int num : input)
+    {
+        heap.insert(num);
+    }
     heap.printHeap();
-    heap.deleteMin();
+    heap.heapSort();
+    // heap.insert(40);
+    // heap.insert(20);
+    // heap.insert(30);
+    // heap.insert(10);
+    // heap.printHeap();
+    // heap.deleteMin();
     return 0;
 }
